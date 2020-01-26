@@ -108,7 +108,7 @@ app.post('/textdetect/:format', async (req, res) => {
   
   zip.stderr.on('data', function (data) {
     // Uncomment to see the files being added
-    //console.log('zip stderr: ' + data);
+    console.log('zip stderr: ' + data);
   });
 
   // End the response on zip exit
