@@ -1,21 +1,21 @@
 {
-  "name": "detectron2",
+  "name": "craft",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gkswjdzz/ainize-run-detectron2.git"
+    "url": "git+https://github.com/gkswjdzz/CRAFT-pytorch.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Hanjeong Lee",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gkswjdzz/ainize-run-detectron2/issues"
+    "url": "https://github.com/gkswjdzz/CRAFT-pytorch/issues"
   },
-  "homepage": "https://github.com/gkswjdzz/ainize-run-detectron2#readme",
+  "homepage": "https://github.com/gkswjdzz/CRAFT-pytorch#readme",
   "dependencies": {
     "busboy": "^0.3.1",
     "cors": "^2.8.5",
