@@ -62,7 +62,7 @@ args = parser.parse_args()
 """ For test images in a folder """
 image_list, _, _ = file_utils.get_files(args.test_folder)
 
-result_folder = './result/'
+result_folder = './data/'
 if not os.path.isdir(result_folder):
     os.mkdir(result_folder)
 
