@@ -16,6 +16,7 @@ app.use(cors({
 var repo_dir = '.';
 
 const model_names = ['craft_mlt_25k', 'craft_ic15_20k', 'craft_refiner_CTW1500']
+const params = ['zip', 'text', 'image']
 
 //return [filename uploaded, model_name]
 function busboyFunc(req, res) {
@@ -49,21 +50,32 @@ function busboyFunc(req, res) {
     req.pipe(busboy);
   }).then(function(data){
     console.log('uuid is ' + data[0] + ' model is ' + data[1])
-    return [__dirname + '/data/res_' + data[0] + '.jpg', data[1]]
+    return [__dirname + '/data/' + data[0] + '.jpg', data[1]]
   })
 }
 
-app.post('/textdetect', async (req, res) => {
-  const [inputname, model] = await busboyFunc(req, res);
+app.post('/textdetect/:format', async (req, res) => {
+  format = req.params.format
+  console.log(format)
+  
+  if(!params.includes(format)){
+    console.log('param error!')
+    res.end()
+    return
+  }
 
-  if(!(model in model_names)){
+  const [inputname, model] = await busboyFunc(req, res);
+  
+  console.log(model)
+  if(!(model_names.includes(model))){
       //TODO: res error handling
       console.log('model_name error!')
       res.end()
       return
   }
   //[--trained_model, --text_threshold, --low_text, --link_threshold, --cuda, --canvas_size, --mag_ratio, --poly, --show_time, --test-folder, --refine, --refiner_model]
-  configs = [model + '.pth', 0.7, 0.4, 0.4, 'False', 1280, 1.5, 'False', 'False', __dirname + '/data/', 'False', 'weights/craft_refiner_CTW1500.pth']
+  //configs = [model + '.pth', 0.7, 0.4, 0.4, 'False', 1280, 1.5, 'False', 'False', __dirname + '/data/', 'False', 'weights/craft_refiner_CTW1500.pth']
+  configs = [model + '.pth', 0.7, 0.4, 0.4, 'False', 1280, 1.5, 'False', 'False', inputname, 'False', 'weights/craft_refiner_CTW1500.pth']
 
   code = await runPython(configs)
   console.log('end run python')
@@ -80,7 +92,11 @@ app.post('/textdetect', async (req, res) => {
   txtOutput = filename + '.txt'
   jpgOutput =  filename + '.jpg'
 
-  
+  if(format != 'zip'){
+    console.log('sorry ! support only zip format')
+    res.end()
+    return
+  }
 
   var zip = spawn('zip', ['-rj', '-', maskOutput, txtOutput, jpgOutput]);
     // Keep writing stdout to res
@@ -125,7 +141,7 @@ runPython = (configs) => {
       '--mag_ratio', configs[6],
       //'--poly', configs[7], 
       //'--show_time', configs[8], 
-      '--test_folder', configs[9], 
+      '--image_path', configs[9], 
       //'--refine', configs[10], 
       //'--refiner_model', configs[11], 
     ]
