@@ -7,3 +7,4 @@ weights*
 __pycache__
 node_modules
 data
+.DS_Store
