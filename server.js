@@ -2,7 +2,6 @@ var express = require("express"),
   cors = require("cors"),
   Busboy = require("busboy"),
   fs = require("fs"),
-  inspect = require("util").inspect,
   uuidv4 = require('uuid/v4');
 const { spawn } = require('child_process');
 
