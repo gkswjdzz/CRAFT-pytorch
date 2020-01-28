@@ -91,19 +91,29 @@ app.post('/:format', async (req, res) => {
   const maskOutput = filename + '_mask.jpg'
   const txtOutput = filename + '.txt'
   const jpgOutput =  filename + '.jpg'
-
+  const zipfile = filename + '.zip'
   if(format == 'zip'){
-    const zip = spawn('zip', ['-rj', '-', maskOutput, txtOutput, jpgOutput])
-      // Keep writing stdout to res
-    res.contentType('zip')
-    zip.stdout.on('data', data => res.write(data))
+    const zip = spawn('zip', ['-rj', zipfile, maskOutput, txtOutput, jpgOutput])
+    // Keep writing stdout to res
+    //res.contentType('zip')
+    //zip.stdout.on('data', data => res.write(data))
     zip.stderr.on('data', data => console.log('zip stderr: ' + data))
 
     // End the response on zip exit
     zip.on('exit', code => {
-      if(code !== 0) res.statusCode = 500
-      console.log('zip process exited with code ' + code)
-      res.end()
+      if(code !== 0) {
+        res.statusCode = 500
+        console.log('zip process exited with code ' + code)
+        res.end()
+      }
+      const z = fs.createReadStream(zipfile)
+      z.on('open', () => {
+        res.set('Content-Type', 'application/zip')
+        z.pipe(res)
+      })
+      z.on('exit', (code) =>
+        console.log('zip spawn exit : ' + code)
+      )  
     })
   }else if(format == 'text'){
     let txt = spawn('cat', [txtOutput])
