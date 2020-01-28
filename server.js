@@ -13,7 +13,7 @@ app.use(cors({
   origin: 'https://ainize.ai',
 }))
 
-var repo_dir = '.'
+const repo_dir = '.'
 
 const model_names = ['craft_mlt_25k', 'craft_ic15_20k', 'craft_refiner_CTW1500']
 const params = ['zip', 'text', 'image']
@@ -23,8 +23,8 @@ function busboyFunc(req, res) {
   return new Promise((resolve, reject) => {
     let fileuploaded = true
     let temp = new Map()
-    var busboy = new Busboy({ headers: req.headers })
-    uuid4 = uuidv4()
+    let busboy = new Busboy({ headers: req.headers })
+    const uuid4 = uuidv4()
     busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
       if (filename === "") {
         fileuploaded = false
@@ -54,7 +54,7 @@ function busboyFunc(req, res) {
 }
 
 app.post('/:format', async (req, res) => {
-  format = req.params.format
+  const format = req.params.format
   console.log(format)
   
   if(!params.includes(format)){
@@ -74,9 +74,9 @@ app.post('/:format', async (req, res) => {
   }
   
   //[--trained_model, --text_threshold, --low_text, --link_threshold, --cuda, --canvas_size, --mag_ratio, --poly, --show_time, --test-folder, --refine, --refiner_model]
-  configs = [model + '.pth', 0.7, 0.4, 0.4, 'False', 1280, 1.5, 'False', 'False', inputname, 'False', 'weights/craft_refiner_CTW1500.pth']
+  const configs = [model + '.pth', 0.7, 0.4, 0.4, 'False', 1280, 1.5, 'False', 'False', inputname, 'False', 'weights/craft_refiner_CTW1500.pth']
 
-  code = await runPython(configs)
+  const code = await runPython(configs)
   console.log('end run python')
   
   //<TODO> if code check
@@ -86,16 +86,14 @@ app.post('/:format', async (req, res) => {
     return
   }
 
-  dirname = path.dirname(inputname)
-  split = inputname.split('/')
-  filename = dirname + '/res_' + split[split.length - 1]
-  filename = filename.split('.')[0]
-  maskOutput = filename + '_mask.jpg'
-  txtOutput = filename + '.txt'
-  jpgOutput =  filename + '.jpg'
+  const split = inputname.split('/')
+  const filename = (path.dirname(inputname) + '/res_' + split[split.length - 1]).split('.')[0]
+  const maskOutput = filename + '_mask.jpg'
+  const txtOutput = filename + '.txt'
+  const jpgOutput =  filename + '.jpg'
 
   if(format == 'zip'){
-    var zip = spawn('zip', ['-rj', '-', maskOutput, txtOutput, jpgOutput])
+    const zip = spawn('zip', ['-rj', '-', maskOutput, txtOutput, jpgOutput])
       // Keep writing stdout to res
     res.contentType('zip')
     zip.stdout.on('data', data => res.write(data))
@@ -144,7 +142,7 @@ app.post('/:format', async (req, res) => {
       }
     })
   }else if(format =='image'){
-    var img = fs.createReadStream(jpgOutput)
+    const img = fs.createReadStream(jpgOutput)
     img.on('open', () => {
       res.set('Content-Type', 'image/png')
       img.pipe(res)
