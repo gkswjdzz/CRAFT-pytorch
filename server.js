@@ -15,7 +15,7 @@ app.use(cors({
 
 const repo_dir = '.'
 
-const model_names = ['craft_mlt_25k', 'craft_ic15_20k', 'craft_refiner_CTW1500']
+const model_names = ['craft_mlt_25k', 'craft_ic15_20k']
 const params = ['zip', 'text', 'image']
 
 //return [filename uploaded, model_name]
@@ -69,7 +69,7 @@ app.post('/:format', async (req, res) => {
   const inputname = await busboyFunc(req, res)
   
   //[--trained_model, --text_threshold, --low_text, --link_threshold, --cuda, --canvas_size, --mag_ratio, --poly, --show_time, --test-folder, --refine, --refiner_model]
-  const configs = [model + '.pth', 0.7, 0.4, 0.4, 'False', 1280, 1.5, 'False', 'False', inputname, 'False', 'weights/craft_refiner_CTW1500.pth']
+  const configs = [model + '.pth', 0.7, 0.4, 0.4, 'False', 1280, 1.5, 'False', 'False', inputname]
 
   const code = await runPython(configs)
   console.log('end run python')
@@ -176,12 +176,8 @@ runPython = (configs) => {
       '--link_threshold', configs[3], 
       '--cuda', 'False', // not yet support cuda //configs[4], 
       '--canvas_size', configs[5], 
-      '--mag_ratio', configs[6],
-      //'--poly', configs[7], 
-      //'--show_time', configs[8], 
-      '--image_path', configs[9], 
-      //'--refine', configs[10], 
-      //'--refiner_model', configs[11], 
+      '--mag_ratio', configs[6], 
+      '--image_path', configs[9],  
     ]
     const pyProg = spawn('python', conf)
     pyProg.stderr.on('data', (data) => {
