@@ -32,10 +32,6 @@ function busboyFunc(req, res) {
       file.pipe(fs.createWriteStream(__dirname + '/data/' + uuid4 + '.jpg'))
     })
 
-    busboy.on("field", (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) =>
-      temp.set(fieldname, val)
-    )
-
     busboy.on("finish", () => {
       if (!fileuploaded) {
         res.writeHead(400)
@@ -43,35 +39,34 @@ function busboyFunc(req, res) {
         return
       }
       console.log('busboy function resolve')
-      resolve([uuid4, temp.get('model')])
+      resolve(uuid4)
     })
     
     req.pipe(busboy)
   }).then(data => {
-    console.log('uuid is ' + data[0] + ' model is ' + data[1])
-    return [__dirname + '/data/' + data[0] + '.jpg', data[1]]
+    console.log('uuid is ' + data)
+    return __dirname + '/data/' + data + '.jpg'
   })
 }
 
 app.post('/:format', async (req, res) => {
   const format = req.params.format
-  console.log(format)
+  const model = req.query.model
+  console.log(format, model)
   
   if(!params.includes(format)){
     console.log('param error!')
     res.end()
     return
   }
-
-  const [inputname, model] = await busboyFunc(req, res)
-  
-  console.log(model)
   if(!(model_names.includes(model))){
-      //TODO: res error handling
-      console.log('model_name error!')
-      res.end()
-      return
+    //TODO: res error handling
+    console.log('model_name error!')
+    res.end()
+    return
   }
+
+  const inputname = await busboyFunc(req, res)
   
   //[--trained_model, --text_threshold, --low_text, --link_threshold, --cuda, --canvas_size, --mag_ratio, --poly, --show_time, --test-folder, --refine, --refiner_model]
   const configs = [model + '.pth', 0.7, 0.4, 0.4, 'False', 1280, 1.5, 'False', 'False', inputname, 'False', 'weights/craft_refiner_CTW1500.pth']
