@@ -177,7 +177,9 @@ runPython = (configs) => {
       '--cuda', 'False', // not yet support cuda //configs[4], 
       '--canvas_size', configs[5], 
       '--mag_ratio', configs[6], 
-      '--image_path', configs[9],  
+      '--poly',
+      '--image_path', configs[9],
+      '--refine','--refiner_model', 'craft_refiner_CTW1500.pth'
     ]
     const pyProg = spawn('python', conf)
     pyProg.stderr.on('data', (data) => {
