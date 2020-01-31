@@ -19,7 +19,7 @@ RUN mkdir /workspace/data
 
 RUN wget 'https://drive.google.com/uc?id=1Jk4eGD7crsqCCg9C9VjCLkMN3ze8kutZ&export=download' -O /workspace/craft_mlt_25k.pth 
 RUN wget 'https://drive.google.com/uc?id=1i2R7UIUqmkUtF0jv_3MXTqmQ_9wuAnLf&export=download' -O /workspace/craft_ic15_20k.pth 
-#RUN wget 'https://drive.google.com/uc?id=1XSaFwBkOaFOdtk4Ane3DFyJGPRw6v5bO&export=download' -O /workspace/craft_refiner_CTW1500.pth 
+RUN wget 'https://drive.google.com/uc?id=1XSaFwBkOaFOdtk4Ane3DFyJGPRw6v5bO&export=download' -O /workspace/craft_refiner_CTW1500.pth 
 
 RUN apt-get install zip
 
